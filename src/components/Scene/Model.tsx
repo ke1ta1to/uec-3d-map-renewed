@@ -13,11 +13,11 @@ export default function Model({ onLoad }: ModelProps) {
   const [isClient, setIsClient] = useState(false)
   
   // Hookを条件分岐の外で呼び出す
-  const gltf = useGLTF('/uec-all.glb')
+  const gltf = useGLTF('/api/model')
   
   useEffect(() => {
     setIsClient(true)
-    useGLTF.preload('/uec-all.glb')
+    useGLTF.preload('/api/model')
   }, [])
 
   useEffect(() => {
