@@ -30,9 +30,17 @@ export default function Player({ walkSpeed = 8, jumpHeight = 5, onLockChange, on
   // マウス操作用の変数
   const euler = useRef(new Euler(0, 0, 0, 'YXZ'))
 
-  // カメラ初期位置設定（人間の目線の高さ）
+  // カメラ初期位置設定
   useEffect(() => {
-    camera.position.set(0, 1.7, 0)
+    // 指定された位置と回転に設定
+    camera.position.set(100, 2, -100)
+    
+    // 回転を度数からラジアンに変換して設定
+    camera.rotation.set(
+      (-20 * Math.PI) / 180, // X: -20度
+      (77 * Math.PI) / 180,  // Y: 77度  
+      (20 * Math.PI) / 180   // Z: 20度
+    )
     
     // PointerLockイベントリスナー
     const handlePointerLockChange = () => {
