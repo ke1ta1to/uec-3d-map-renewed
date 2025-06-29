@@ -12,7 +12,7 @@ interface PlayerProps {
   onDebugUpdate?: (data: { position: { x: number, y: number, z: number }, rotation: { x: number, y: number, z: number } }) => void
 }
 
-export default function Player({ walkSpeed = 8, jumpHeight = 5, onLockChange, onDebugUpdate }: PlayerProps) {
+export default function Player({ walkSpeed = 11, jumpHeight = 9, onLockChange, onDebugUpdate }: PlayerProps) {
   const { camera, scene } = useThree()
   
   // KeyboardControlsのhookを使用
@@ -123,7 +123,7 @@ export default function Player({ walkSpeed = 8, jumpHeight = 5, onLockChange, on
     moveVector.addScaledVector(rightDirection, direction.current.x)
 
     // 重力
-    velocity.current.y -= 20 * delta
+    velocity.current.y -= 30 * delta
 
     // ジャンプ
     if (jump && isOnGround.current) {

@@ -10,8 +10,8 @@ import Instructions from '../UI/Instructions'
 import DebugInfo from '../UI/DebugInfo'
 
 export default function Scene() {
-  const [walkSpeed, setWalkSpeed] = useState(8)
-  const [jumpHeight, setJumpHeight] = useState(5)
+  const [walkSpeed, setWalkSpeed] = useState(11)
+  const [jumpHeight, setJumpHeight] = useState(9)
   const [isPointerLocked, setIsPointerLocked] = useState(false)
   const [isRequestPending, setIsRequestPending] = useState(false)
   const [showDebug, setShowDebug] = useState(true)
