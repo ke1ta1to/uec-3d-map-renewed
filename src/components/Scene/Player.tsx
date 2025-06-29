@@ -9,9 +9,10 @@ interface PlayerProps {
   walkSpeed?: number
   jumpHeight?: number
   onLockChange?: (locked: boolean) => void
+  onDebugUpdate?: (data: { position: { x: number, y: number, z: number }, rotation: { x: number, y: number, z: number } }) => void
 }
 
-export default function Player({ walkSpeed = 8, jumpHeight = 5, onLockChange }: PlayerProps) {
+export default function Player({ walkSpeed = 8, jumpHeight = 5, onLockChange, onDebugUpdate }: PlayerProps) {
   const { camera, scene } = useThree()
   
   // KeyboardControlsのhookを使用
@@ -142,6 +143,24 @@ export default function Player({ walkSpeed = 8, jumpHeight = 5, onLockChange }: 
 
     // 位置更新
     camera.position.addScaledVector(velocity.current, delta)
+
+    // デバッグ情報更新（毎フレーム）
+    if (onDebugUpdate) {
+      const position = camera.position
+      const rotation = camera.rotation
+      onDebugUpdate({
+        position: {
+          x: Math.round(position.x * 100) / 100,
+          y: Math.round(position.y * 100) / 100,
+          z: Math.round(position.z * 100) / 100
+        },
+        rotation: {
+          x: Math.round((rotation.x * 180 / Math.PI) * 100) / 100,
+          y: Math.round((rotation.y * 180 / Math.PI) * 100) / 100,
+          z: Math.round((rotation.z * 180 / Math.PI) * 100) / 100
+        }
+      })
+    }
   })
 
   return null

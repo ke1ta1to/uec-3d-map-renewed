@@ -7,13 +7,17 @@ interface InstructionsProps {
   jumpHeight: number
   onWalkSpeedChange: (speed: number) => void
   onJumpHeightChange: (height: number) => void
+  showDebug: boolean
+  onDebugToggle: (show: boolean) => void
 }
 
 export default function Instructions({ 
   walkSpeed, 
   jumpHeight, 
   onWalkSpeedChange, 
-  onJumpHeightChange 
+  onJumpHeightChange,
+  showDebug,
+  onDebugToggle
 }: InstructionsProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -73,6 +77,19 @@ export default function Instructions({
                 onChange={(e) => onJumpHeightChange(Number(e.target.value))}
                 className="w-full"
               />
+            </div>
+
+            {/* デバッグ表示トグル */}
+            <div>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={showDebug}
+                  onChange={(e) => onDebugToggle(e.target.checked)}
+                  className="rounded"
+                />
+                <span className="text-sm font-medium">デバッグ情報を表示</span>
+              </label>
             </div>
           </div>
         )}

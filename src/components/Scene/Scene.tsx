@@ -7,12 +7,18 @@ import Model from './Model'
 import Player from './Player'
 import LoadingSpinner from '../UI/LoadingSpinner'
 import Instructions from '../UI/Instructions'
+import DebugInfo from '../UI/DebugInfo'
 
 export default function Scene() {
   const [walkSpeed, setWalkSpeed] = useState(8)
   const [jumpHeight, setJumpHeight] = useState(5)
   const [isPointerLocked, setIsPointerLocked] = useState(false)
   const [isRequestPending, setIsRequestPending] = useState(false)
+  const [showDebug, setShowDebug] = useState(false)
+  const [debugData, setDebugData] = useState<{
+    position: { x: number, y: number, z: number }
+    rotation: { x: number, y: number, z: number }
+  } | null>(null)
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const retryCountRef = useRef<number>(0)
   const lastRequestTimeRef = useRef<number>(0)
@@ -170,10 +176,14 @@ export default function Scene() {
                 walkSpeed={walkSpeed} 
                 jumpHeight={jumpHeight}
                 onLockChange={setIsPointerLocked}
+                onDebugUpdate={setDebugData}
               />
             </Suspense>
           </Canvas>
         </Suspense>
+
+        {/* デバッグ情報 */}
+        {showDebug && <DebugInfo isVisible={showDebug} debugData={debugData} />}
 
         {/* 操作説明とUI */}
         <Instructions
@@ -181,6 +191,8 @@ export default function Scene() {
           jumpHeight={jumpHeight}
           onWalkSpeedChange={setWalkSpeed}
           onJumpHeightChange={setJumpHeight}
+          showDebug={showDebug}
+          onDebugToggle={setShowDebug}
         />
 
         {/* ポインターロック開始のオーバーレイ */}
@@ -189,17 +201,17 @@ export default function Scene() {
             className="fixed inset-0 bg-black/30 flex items-center justify-center z-40 cursor-pointer"
             onClick={handleStartPointerLock}
           >
-            <div className="bg-white/90 p-6 rounded-lg text-center">
-              <h2 className="text-xl font-bold mb-2">3D マップを探索</h2>
+            <div className="bg-black/80 p-6 rounded-lg text-center border border-gray-300">
+              <h2 className="text-xl font-bold mb-2 text-white">3D マップを探索</h2>
               {isRequestPending ? (
-                <p className="text-gray-600 mb-4">準備中...</p>
+                <p className="text-gray-200 mb-4">準備中...</p>
               ) : (
-                <p className="text-gray-600 mb-4">クリックして操作を開始</p>
+                <p className="text-gray-200 mb-4">クリックして操作を開始</p>
               )}
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-300">
                 <p>WASD: 移動 | Space: ジャンプ | マウス: 視点</p>
                 {isRequestPending && (
-                  <p className="text-xs text-blue-600 mt-1">少々お待ちください...</p>
+                  <p className="text-xs text-blue-400 mt-1">少々お待ちください...</p>
                 )}
               </div>
             </div>
