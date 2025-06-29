@@ -1,43 +1,43 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Card from '../common/Card'
+import { useState, useEffect } from "react";
+import Card from "../common/Card";
 
 interface DebugInfoProps {
-  isVisible: boolean
+  isVisible: boolean;
   debugData?: {
-    position: { x: number, y: number, z: number }
-    rotation: { x: number, y: number, z: number }
-  }
+    position: { x: number; y: number; z: number };
+    rotation: { x: number; y: number; z: number };
+  };
 }
 
 export default function DebugInfo({ isVisible, debugData }: DebugInfoProps) {
-  const [fps, setFps] = useState(0)
+  const [fps, setFps] = useState(0);
 
   useEffect(() => {
-    if (!isVisible) return
+    if (!isVisible) return;
 
-    let frameCount = 0
-    let lastTime = Date.now()
+    let frameCount = 0;
+    let lastTime = Date.now();
 
     const updateFps = () => {
-      frameCount++
-      const now = Date.now()
+      frameCount++;
+      const now = Date.now();
       if (now - lastTime >= 1000) {
-        setFps(Math.round((frameCount * 1000) / (now - lastTime)))
-        frameCount = 0
-        lastTime = now
+        setFps(Math.round((frameCount * 1000) / (now - lastTime)));
+        frameCount = 0;
+        lastTime = now;
       }
       if (isVisible) {
-        requestAnimationFrame(updateFps)
+        requestAnimationFrame(updateFps);
       }
-    }
+    };
 
-    const animationId = requestAnimationFrame(updateFps)
-    return () => cancelAnimationFrame(animationId)
-  }, [isVisible])
+    const animationId = requestAnimationFrame(updateFps);
+    return () => cancelAnimationFrame(animationId);
+  }, [isVisible]);
 
-  if (!isVisible) return null
+  if (!isVisible) return null;
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -47,7 +47,7 @@ export default function DebugInfo({ isVisible, debugData }: DebugInfoProps) {
             <span className="text-blue-200">FPS:</span>
             <span className="text-white font-bold">{fps}</span>
           </div>
-          
+
           {debugData && (
             <>
               <div className="border-t border-gray-600 pt-3">
@@ -67,7 +67,7 @@ export default function DebugInfo({ isVisible, debugData }: DebugInfoProps) {
                   </div>
                 </div>
               </div>
-              
+
               <div className="border-t border-gray-600 pt-3">
                 <div className="text-blue-200 mb-2">回転 (度)</div>
                 <div className="grid grid-cols-3 gap-2 text-xs">
@@ -90,5 +90,5 @@ export default function DebugInfo({ isVisible, debugData }: DebugInfoProps) {
         </div>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import Scene from '@/components/Scene/Scene'
+import Scene from "@/components/Scene/Scene";
 
 export default function Home() {
   return (
@@ -7,7 +7,8 @@ export default function Home() {
       <div className="sr-only">
         <h1>UEC 3D キャンパスマップ - 電気通信大学バーチャルキャンパス</h1>
         <p>
-          電気通信大学の3Dキャンパスマップです。WebGLとReact Three Fiberを使用した
+          電気通信大学の3Dキャンパスマップです。WebGLとReact Three
+          Fiberを使用した
           インタラクティブな3Dマップで、キャンパス内の建物や施設を立体的に探索できます。
         </p>
         <ul>
@@ -22,8 +23,12 @@ export default function Home() {
           便利なキャンパス案内ツールです。
         </p>
       </div>
-      
-      <main className="w-full h-screen" role="application" aria-label="3Dキャンパスマップ">
+
+      <main
+        className="w-full h-screen"
+        role="application"
+        aria-label="3Dキャンパスマップ"
+      >
         <Scene />
       </main>
     </>

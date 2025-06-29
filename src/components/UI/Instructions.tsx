@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Card from '../common/Card'
+import { useState } from "react";
+import Card from "../common/Card";
 
 interface InstructionsProps {
-  walkSpeed: number
-  jumpHeight: number
-  onWalkSpeedChange: (speed: number) => void
-  onJumpHeightChange: (height: number) => void
-  showDebug: boolean
-  onDebugToggle: (show: boolean) => void
+  walkSpeed: number;
+  jumpHeight: number;
+  onWalkSpeedChange: (speed: number) => void;
+  onJumpHeightChange: (height: number) => void;
+  showDebug: boolean;
+  onDebugToggle: (show: boolean) => void;
 }
 
-export default function Instructions({ 
-  walkSpeed, 
-  jumpHeight, 
-  onWalkSpeedChange, 
+export default function Instructions({
+  walkSpeed,
+  jumpHeight,
+  onWalkSpeedChange,
   onJumpHeightChange,
   showDebug,
-  onDebugToggle
+  onDebugToggle,
 }: InstructionsProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="fixed top-4 left-4 z-50 space-y-4 max-w-sm">
@@ -28,19 +28,27 @@ export default function Instructions({
       <Card title="操作方法">
         <div className="space-y-2 text-sm">
           <div className="flex items-center">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">W A S D</span>
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">
+              W A S D
+            </span>
             <span className="text-gray-300 ml-3">移動</span>
           </div>
           <div className="flex items-center">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">Space</span>
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">
+              Space
+            </span>
             <span className="text-gray-300 ml-3">ジャンプ</span>
           </div>
           <div className="flex items-center">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">マウス</span>
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">
+              マウス
+            </span>
             <span className="text-gray-300 ml-3">視点操作</span>
           </div>
           <div className="flex items-center">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">ESC</span>
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">
+              ESC
+            </span>
             <span className="text-gray-300 ml-3">一時停止</span>
           </div>
           <p className="text-xs text-blue-200 mt-3 pt-2 border-t border-gray-600">
@@ -56,15 +64,16 @@ export default function Instructions({
           className="w-full flex items-center justify-between font-bold hover:bg-white/10 p-2 rounded transition-colors"
         >
           <span>設定</span>
-          <span className="text-blue-400">{isExpanded ? '▼' : '▶'}</span>
+          <span className="text-blue-400">{isExpanded ? "▼" : "▶"}</span>
         </button>
-        
+
         {isExpanded && (
           <div className="mt-4 pt-4 border-t border-gray-600 space-y-4">
             {/* 歩行速度 */}
             <div>
               <label className="block text-sm font-medium mb-2 text-blue-200">
-                歩行速度: <span className="text-white">{walkSpeed.toFixed(1)}</span>
+                歩行速度:{" "}
+                <span className="text-white">{walkSpeed.toFixed(1)}</span>
               </label>
               <input
                 type="range"
@@ -80,7 +89,8 @@ export default function Instructions({
             {/* ジャンプの高さ */}
             <div>
               <label className="block text-sm font-medium mb-2 text-blue-200">
-                ジャンプの高さ: <span className="text-white">{jumpHeight.toFixed(1)}</span>
+                ジャンプの高さ:{" "}
+                <span className="text-white">{jumpHeight.toFixed(1)}</span>
               </label>
               <input
                 type="range"
@@ -102,12 +112,14 @@ export default function Instructions({
                   onChange={(e) => onDebugToggle(e.target.checked)}
                   className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
                 />
-                <span className="text-sm font-medium text-gray-300">デバッグ情報を表示</span>
+                <span className="text-sm font-medium text-gray-300">
+                  デバッグ情報を表示
+                </span>
               </label>
             </div>
           </div>
         )}
       </Card>
     </div>
-  )
+  );
 }

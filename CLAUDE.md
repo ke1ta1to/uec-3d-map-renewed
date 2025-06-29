@@ -44,7 +44,7 @@ src/components/
 
 ```typescript
 // Model.tsx
-const gltf = useGLTF('/api/model')
+const gltf = useGLTF("/api/model");
 ```
 
 ### FPSコントロール実装

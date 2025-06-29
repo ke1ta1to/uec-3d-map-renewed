@@ -1,21 +1,26 @@
-'use client'
+"use client";
 
-import { ReactNode } from 'react'
+import { ReactNode } from "react";
 
 interface CardProps {
-  children: ReactNode
-  className?: string
-  title?: string
-  variant?: 'dark' | 'darker'
+  children: ReactNode;
+  className?: string;
+  title?: string;
+  variant?: "dark" | "darker";
 }
 
-export default function Card({ children, className = '', title, variant = 'dark' }: CardProps) {
-  const baseClasses = 'rounded-lg border text-white backdrop-blur-sm'
+export default function Card({
+  children,
+  className = "",
+  title,
+  variant = "dark",
+}: CardProps) {
+  const baseClasses = "rounded-lg border text-white backdrop-blur-sm";
   const variantClasses = {
-    dark: 'bg-black/70 border-gray-600',
-    darker: 'bg-black/80 border-gray-600'
-  }
-  
+    dark: "bg-black/70 border-gray-600",
+    darker: "bg-black/80 border-gray-600",
+  };
+
   return (
     <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
       {title && (
@@ -23,9 +28,7 @@ export default function Card({ children, className = '', title, variant = 'dark'
           <h3 className="font-bold text-lg">{title}</h3>
         </div>
       )}
-      <div className="p-4">
-        {children}
-      </div>
+      <div className="p-4">{children}</div>
     </div>
-  )
+  );
 }
