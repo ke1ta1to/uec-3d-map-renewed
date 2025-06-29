@@ -227,20 +227,42 @@ export default function Scene() {
         {/* ポインターロック開始のオーバーレイ */}
         {isModelLoaded && !isPointerLocked && (
           <div 
-            className="fixed inset-0 bg-black/30 flex items-center justify-center z-40 cursor-pointer"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-40 cursor-pointer"
             onClick={handleStartPointerLock}
           >
-            <div className="bg-black/80 p-6 rounded-lg text-center border border-gray-300">
-              <h2 className="text-xl font-bold mb-2 text-white">3D マップを探索</h2>
-              {isRequestPending ? (
-                <p className="text-gray-200 mb-4">準備中...</p>
-              ) : (
-                <p className="text-gray-200 mb-4">クリックして操作を開始</p>
-              )}
-              <div className="text-sm text-gray-300">
-                <p>WASD: 移動 | Space: ジャンプ | マウス: 視点</p>
+            <div className="bg-black/80 border border-gray-600 p-8 rounded-lg text-center max-w-md mx-4 backdrop-blur-sm">
+              <div className="mb-4">
+                <h2 className="text-2xl font-bold mb-2 text-white">3D マップを探索</h2>
+                {isRequestPending ? (
+                  <p className="text-blue-200 mb-4">準備中...</p>
+                ) : (
+                  <p className="text-blue-200 mb-4">クリックして操作を開始</p>
+                )}
+              </div>
+              
+              <div className="space-y-3 text-sm">
+                <div className="border border-gray-600 rounded-lg p-3 bg-gray-900/50">
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="text-center">
+                      <div className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded mb-1">WASD</div>
+                      <div className="text-gray-300">移動</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded mb-1">Space</div>
+                      <div className="text-gray-300">ジャンプ</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded mb-1">マウス</div>
+                      <div className="text-gray-300">視点</div>
+                    </div>
+                  </div>
+                </div>
+                
                 {isRequestPending && (
-                  <p className="text-xs text-blue-400 mt-1">少々お待ちください...</p>
+                  <div className="flex items-center justify-center gap-2 text-blue-400">
+                    <div className="w-4 h-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin"></div>
+                    <span className="text-sm">少々お待ちください...</span>
+                  </div>
                 )}
               </div>
             </div>
