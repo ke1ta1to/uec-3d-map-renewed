@@ -4,68 +4,82 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-UEC 3D Map の更新版 - Next.js 15.3.4（App Router）+ React 19 + TypeScript + Tailwind CSS v4 を使用した 3D マップアプリケーション
+電気通信大学の3Dキャンパスマップ - FPS風の操作で探索可能な3D WebGLアプリケーション
 
 ## 開発コマンド
 
-### 基本コマンド
-
 - `pnpm dev` - 開発サーバー起動（localhost:3000）
 - `pnpm build` - 本番ビルド
-- `pnpm start` - 本番サーバー起動
-- `pnpm lint` - ESLint によるコード検証
+- `pnpm lint` - ESLint検証（コード変更後は必ず実行）
+- `pnpm lint --fix` - 自動修正可能なエラーを修正
 
-### リンター実行時の注意
+## アーキテクチャ
 
-- 必ず `pnpm lint` を実行してエラーがないことを確認
-- 自動修正が可能な場合は `pnpm lint --fix` を使用
+### コア技術スタック
 
-## プロジェクト構成
+- **Next.js 15.3.4** (App Router)
+- **React Three Fiber** (@react-three/fiber) - 3D描画
+- **@react-three/drei** - R3F用ヘルパー（useGLTF、KeyboardControls等）
+- **TypeScript** + **Tailwind CSS v4**
 
-### フレームワーク・ライブラリ
-
-- **Next.js 15.3.4**: App Router 使用、最新の React Server Components 対応
-- **React 19**: 最新バージョンの React
-- **TypeScript**: 厳格な型チェック設定
-- **Tailwind CSS v4**: ユーティリティファースト CSS（最新バージョン）
-- **ESLint**: next/core-web-vitals + next/typescript 設定
-
-### ディレクトリ構造
+### 主要コンポーネント構成
 
 ```
-src/
-├── app/                # App Router（Next.js 13+）
-│   ├── layout.tsx      # ルートレイアウト
-│   ├── page.tsx        # ホームページ
-│   └── globals.css     # グローバルスタイル
-public/                 # 静的アセット
+src/components/
+├── Scene/
+│   ├── Scene.tsx        # メインシーン管理、ライティング、ローディング制御
+│   ├── Model.tsx        # GLBモデル読み込み（API経由）
+│   └── Player.tsx       # FPSコントローラー（移動、視点、物理演算）
+├── UI/
+│   ├── LoadingSpinner.tsx # プログレスバー付きローディング画面
+│   ├── Instructions.tsx   # 操作説明・設定パネル
+│   └── DebugInfo.tsx     # FPS、位置、回転情報表示
+└── common/
+    └── Card.tsx         # 再利用可能UIカードコンポーネント
 ```
 
-### 重要な設定ファイル
+### GLBモデル取得方式
 
-- `tsconfig.json`: TypeScript 設定（@/\* path mapping 有効）
-- `eslint.config.mjs`: ESLint 設定（flat config 形式）
-- `next.config.ts`: Next.js 設定
-- `postcss.config.mjs`: PostCSS 設定（Tailwind 用）
+`/api/model` ルートを経由して外部URL（https://www.uec.ac.jp/about/profile/access/map/uec-all.glb）から取得。CORSエラーを回避するためのプロキシ実装。
 
-## 開発ガイドライン
+```typescript
+// Model.tsx
+const gltf = useGLTF('/api/model')
+```
 
-### コード規約
+### FPSコントロール実装
 
-- TypeScript の厳格な型チェックに従う
-- ESLint ルールを遵守（next/core-web-vitals + next/typescript）
-- App Router パターンを使用（pages/ディレクトリは使用しない）
-- Tailwind CSS のユーティリティクラスを優先
-- フォント: Geist Sans + Geist Mono を使用
+- **移動**: WASD キー（KeyboardControls使用）
+- **ジャンプ**: Space（重力値: 30）
+- **視点**: マウス（PointerLock API）
+- **一時停止**: ESC（再開は画面クリック、5回まで自動リトライ）
 
-### ファイル作成時の注意
+PointerLock解除後の再開時にエラーが発生する場合があるため、段階的な遅延（350ms～950ms）でリトライ処理を実装。
 
-- 新しいページは `src/app/` 以下に作成
-- コンポーネントは適切な型定義を含める
-- Server Components と Client Components を適切に使い分ける
+### ローディングシステム
 
-### 3D マップ関連の実装予定
+1. LoadingSpinner表示（プログレスバー0%→85%）
+2. モデル読み込み完了後、`completeLoading()`呼び出し
+3. プログレス100%→フェードアウト（0.6秒）
+4. メインUI表示
 
-- プロジェクト名から 3D マップ機能の実装が予想される
-- Three.js、React Three Fiber 等の 3D ライブラリ追加が見込まれる
-- WebGL 対応ブラウザでの動作が前提となる可能性
+### UI設計パターン
+
+- **Cardコンポーネント**: `dark`/`darker`バリアント、統一されたスタイル
+- **z-index階層**:
+  - LoadingSpinner: z-[60]
+  - DebugInfo/Instructions: z-50
+  - PointerLockオーバーレイ: z-40
+
+### 開発時の注意事項
+
+1. **Client Components**: 3D関連コンポーネントは全て`'use client'`必須
+2. **SSR対応**: useGLTF等のhooksはuseEffect内で実行
+3. **デバッグ情報**: 開始位置(100, 2, -100)、歩行速度11、ジャンプ高9がデフォルト
+4. **ライティング**: 複数のdirectionalLight + ambientLight + hemisphereLight + pointLight
+
+### パフォーマンス最適化
+
+- API経由のGLBファイルは24時間キャッシュ
+- React Three Fiberのoptimizeパッケージインポート設定
+- Suspenseによる遅延読み込み
