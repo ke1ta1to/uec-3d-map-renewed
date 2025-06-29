@@ -214,7 +214,7 @@ export default function Scene() {
 
         {/* デバッグ情報 */}
         {isModelLoaded && showDebug && (
-          <DebugInfo isVisible={showDebug} debugData={debugData} />
+          <DebugInfo isVisible={showDebug} debugData={debugData || undefined} />
         )}
 
         {/* 操作説明とUI */}
