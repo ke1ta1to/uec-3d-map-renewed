@@ -12,24 +12,32 @@ export default function Scene() {
       <Suspense fallback={<LoadingSpinner />}>
         <Canvas
           camera={{
-            position: [50, 50, 50],
-            fov: 60,
+            position: [100, 80, 100],
+            fov: 45,
           }}
-          className="bg-gray-100"
+          className="bg-gradient-to-b from-blue-50 to-gray-100"
           gl={{ antialias: true }}
           dpr={[1, 2]}
         >
           <Suspense fallback={null}>
             {/* ライティング */}
-            <ambientLight intensity={0.4} />
+            <ambientLight intensity={1.2} />
             <directionalLight 
-              position={[100, 100, 50]} 
-              intensity={1}
+              position={[50, 100, 50]} 
+              intensity={1.5}
               castShadow
               shadow-mapSize-width={2048}
               shadow-mapSize-height={2048}
             />
-            <hemisphereLight intensity={0.35} />
+            <directionalLight 
+              position={[-50, 100, -50]} 
+              intensity={0.8}
+            />
+            <hemisphereLight 
+              intensity={0.8}
+              color="#ffffff"
+              groundColor="#cccccc"
+            />
             
             {/* GLBモデル */}
             <Model />
@@ -40,12 +48,13 @@ export default function Scene() {
               enableZoom 
               enableRotate
               enableDamping
-              dampingFactor={0.05}
-              rotateSpeed={0.5}
-              zoomSpeed={0.8}
-              panSpeed={0.8}
-              minDistance={10}
-              maxDistance={200}
+              dampingFactor={0.03}
+              rotateSpeed={0.6}
+              zoomSpeed={1.0}
+              panSpeed={1.0}
+              minDistance={20}
+              maxDistance={300}
+              target={[0, 0, 0]}
             />
           </Suspense>
         </Canvas>
