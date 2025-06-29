@@ -14,7 +14,7 @@ export default function Scene() {
   const [jumpHeight, setJumpHeight] = useState(5)
   const [isPointerLocked, setIsPointerLocked] = useState(false)
   const [isRequestPending, setIsRequestPending] = useState(false)
-  const [showDebug, setShowDebug] = useState(false)
+  const [showDebug, setShowDebug] = useState(true)
   const [debugData, setDebugData] = useState<{
     position: { x: number, y: number, z: number }
     rotation: { x: number, y: number, z: number }
@@ -150,22 +150,36 @@ export default function Scene() {
           >
             <Suspense fallback={null}>
               {/* ライティング */}
-              <ambientLight intensity={1.2} />
+              <ambientLight intensity={2.0} />
               <directionalLight 
                 position={[50, 100, 50]} 
-                intensity={1.5}
+                intensity={2.0}
                 castShadow
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
               />
               <directionalLight 
                 position={[-50, 100, -50]} 
-                intensity={0.8}
+                intensity={1.5}
+              />
+              <directionalLight 
+                position={[0, 100, 100]} 
+                intensity={1.2}
+              />
+              <directionalLight 
+                position={[0, 100, -100]} 
+                intensity={1.2}
               />
               <hemisphereLight 
-                intensity={0.8}
+                intensity={1.2}
                 color="#ffffff"
-                groundColor="#cccccc"
+                groundColor="#f0f0f0"
+              />
+              {/* 追加の点光源 */}
+              <pointLight 
+                position={[0, 50, 0]} 
+                intensity={0.8}
+                distance={200}
               />
               
               {/* GLBモデル */}
