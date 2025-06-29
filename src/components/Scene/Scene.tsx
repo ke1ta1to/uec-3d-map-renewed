@@ -9,12 +9,18 @@ import LoadingSpinner from '../UI/LoadingSpinner'
 import Instructions from '../UI/Instructions'
 import DebugInfo from '../UI/DebugInfo'
 
+interface LoadingSpinnerRef {
+  completeLoading: () => void
+}
+
 export default function Scene() {
   const [walkSpeed, setWalkSpeed] = useState(11)
   const [jumpHeight, setJumpHeight] = useState(9)
   const [isPointerLocked, setIsPointerLocked] = useState(false)
   const [isRequestPending, setIsRequestPending] = useState(false)
   const [showDebug, setShowDebug] = useState(true)
+  const [isModelLoaded, setIsModelLoaded] = useState(false)
+  const [showLoadingSpinner, setShowLoadingSpinner] = useState(true)
   const [debugData, setDebugData] = useState<{
     position: { x: number, y: number, z: number }
     rotation: { x: number, y: number, z: number }
@@ -22,6 +28,7 @@ export default function Scene() {
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const retryCountRef = useRef<number>(0)
   const lastRequestTimeRef = useRef<number>(0)
+  const loadingSpinnerRef = useRef<LoadingSpinnerRef>(null)
 
   // 状態同期とクリーンアップ
   useEffect(() => {
@@ -136,7 +143,8 @@ export default function Scene() {
   return (
     <div className="w-full h-screen">
       <KeyboardControls map={keyMap}>
-        <Suspense fallback={<LoadingSpinner />}>
+        {showLoadingSpinner && <LoadingSpinner ref={loadingSpinnerRef} onComplete={() => setShowLoadingSpinner(false)} />}
+        <Suspense fallback={null}>
           <Canvas
             camera={{
               fov: 75,
@@ -183,7 +191,12 @@ export default function Scene() {
               />
               
               {/* GLBモデル */}
-              <Model />
+              <Model onLoad={() => {
+                // LoadingSpinnerの完了処理を呼び出し
+                loadingSpinnerRef.current?.completeLoading()
+                // 即座にモデル読み込み完了状態に（ローディングフェードアウトと並行してメインUI表示）
+                setIsModelLoaded(true)
+              }} />
               
               {/* FPSプレイヤーコントロール */}
               <Player 
@@ -197,20 +210,22 @@ export default function Scene() {
         </Suspense>
 
         {/* デバッグ情報 */}
-        {showDebug && <DebugInfo isVisible={showDebug} debugData={debugData} />}
+        {isModelLoaded && showDebug && <DebugInfo isVisible={showDebug} debugData={debugData} />}
 
         {/* 操作説明とUI */}
-        <Instructions
-          walkSpeed={walkSpeed}
-          jumpHeight={jumpHeight}
-          onWalkSpeedChange={setWalkSpeed}
-          onJumpHeightChange={setJumpHeight}
-          showDebug={showDebug}
-          onDebugToggle={setShowDebug}
-        />
+        {isModelLoaded && (
+          <Instructions
+            walkSpeed={walkSpeed}
+            jumpHeight={jumpHeight}
+            onWalkSpeedChange={setWalkSpeed}
+            onJumpHeightChange={setJumpHeight}
+            showDebug={showDebug}
+            onDebugToggle={setShowDebug}
+          />
+        )}
 
         {/* ポインターロック開始のオーバーレイ */}
-        {!isPointerLocked && (
+        {isModelLoaded && !isPointerLocked && (
           <div 
             className="fixed inset-0 bg-black/30 flex items-center justify-center z-40 cursor-pointer"
             onClick={handleStartPointerLock}

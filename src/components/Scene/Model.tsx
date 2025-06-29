@@ -4,7 +4,11 @@ import { useGLTF } from '@react-three/drei'
 import { useRef, useEffect, useState } from 'react'
 import { Group } from 'three'
 
-export default function Model() {
+interface ModelProps {
+  onLoad?: () => void
+}
+
+export default function Model({ onLoad }: ModelProps) {
   const groupRef = useRef<Group>(null)
   const [isClient, setIsClient] = useState(false)
   
@@ -15,6 +19,12 @@ export default function Model() {
     setIsClient(true)
     useGLTF.preload('/uec-all.glb')
   }, [])
+
+  useEffect(() => {
+    if (gltf && onLoad) {
+      onLoad()
+    }
+  }, [gltf, onLoad])
   
   // クライアントサイドでのみ表示
   if (!isClient) {
