@@ -27,17 +27,21 @@ export default function Instructions({
       {/* 操作説明 */}
       <Card title="操作方法">
         <div className="space-y-2 text-sm">
-          <div className="flex items-center gap-2">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs">W A S D</span>
-            <span className="text-gray-300">移動</span>
+          <div className="flex items-center">
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">W A S D</span>
+            <span className="text-gray-300 ml-3">移動</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs">Space</span>
-            <span className="text-gray-300">ジャンプ</span>
+          <div className="flex items-center">
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">Space</span>
+            <span className="text-gray-300 ml-3">ジャンプ</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs">マウス</span>
-            <span className="text-gray-300">視点操作</span>
+          <div className="flex items-center">
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">マウス</span>
+            <span className="text-gray-300 ml-3">視点操作</span>
+          </div>
+          <div className="flex items-center">
+            <span className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded text-xs w-[70px] text-center">ESC</span>
+            <span className="text-gray-300 ml-3">一時停止</span>
           </div>
           <p className="text-xs text-blue-200 mt-3 pt-2 border-t border-gray-600">
             画面をクリックしてマウスロック開始

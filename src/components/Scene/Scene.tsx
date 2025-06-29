@@ -242,7 +242,7 @@ export default function Scene() {
               
               <div className="space-y-3 text-sm">
                 <div className="border border-gray-600 rounded-lg p-3 bg-gray-900/50">
-                  <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="grid grid-cols-2 gap-3 text-xs">
                     <div className="text-center">
                       <div className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded mb-1">WASD</div>
                       <div className="text-gray-300">移動</div>
@@ -254,6 +254,10 @@ export default function Scene() {
                     <div className="text-center">
                       <div className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded mb-1">マウス</div>
                       <div className="text-gray-300">視点</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-mono bg-blue-600/20 text-blue-300 px-2 py-1 rounded mb-1">ESC</div>
+                      <div className="text-gray-300">一時停止</div>
                     </div>
                   </div>
                 </div>
