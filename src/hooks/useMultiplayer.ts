@@ -135,12 +135,12 @@ export function useMultiplayer() {
         }
       }, 10000)
 
-    } catch (error) {
+    } catch {
       setIsConnected(false)
     } finally {
       isConnectingRef.current = false
     }
-  }, [supabase, isConnected, nickname])
+  }, [supabase, isConnected, nickname, userId])
 
   // 位置を更新
   const updatePosition = useCallback(async (
