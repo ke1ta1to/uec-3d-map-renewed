@@ -11,6 +11,13 @@ export function useMultiplayer() {
   const [players, setPlayers] = useState<Map<string, PlayerPosition>>(new Map())
   const [userId, setUserId] = useState<string | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const [nickname, setNickname] = useState<string>(() => {
+    // ローカルストレージから保存されたニックネームを取得
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('uec-3d-map-nickname') || 'Player'
+    }
+    return 'Player'
+  })
   
   const supabase = createClient()
   const channelRef = useRef<RealtimeChannel | null>(null)
@@ -49,6 +56,8 @@ export function useMultiplayer() {
         position_y: 2,
         position_z: -100,
         rotation_y: 0,
+        nickname: nickname,
+        color: `#${Math.floor(Math.random()*16777215).toString(16)}`, // ランダムカラー
         updated_at: new Date().toISOString()
       })
       
@@ -131,7 +140,7 @@ export function useMultiplayer() {
     } finally {
       isConnectingRef.current = false
     }
-  }, [supabase, isConnected])
+  }, [supabase, isConnected, nickname])
 
   // 位置を更新
   const updatePosition = useCallback(async (
@@ -205,12 +214,41 @@ export function useMultiplayer() {
     }
   }, [disconnect, supabase])
 
+  // ニックネームを更新
+  const updateNickname = useCallback(async (newNickname: string) => {
+    setNickname(newNickname)
+    
+    // ローカルストレージに保存
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('uec-3d-map-nickname', newNickname)
+    }
+    
+    const { data: { user } } = await supabase.auth.getUser()
+    const currentUserId = user?.id
+    
+    if (!currentUserId) return
+    
+    try {
+      await supabase
+        .from('player_positions')
+        .update({ 
+          nickname: newNickname,
+          updated_at: new Date().toISOString() // updated_atも更新してリアルタイムイベントを確実に発生させる
+        })
+        .eq('user_id', currentUserId)
+    } catch (error) {
+      console.error('Failed to update nickname:', error)
+    }
+  }, [supabase])
+
   return {
     players: Array.from(players.values()),
     isConnected,
     connect,
     disconnect,
     updatePosition,
-    userId
+    updateNickname,
+    userId,
+    nickname
   }
 }

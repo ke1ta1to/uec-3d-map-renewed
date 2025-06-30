@@ -10,6 +10,8 @@ interface InstructionsProps {
   onJumpHeightChange: (height: number) => void;
   showDebug: boolean;
   onDebugToggle: (show: boolean) => void;
+  nickname?: string;
+  onNicknameChange?: (nickname: string) => void;
 }
 
 export default function Instructions({
@@ -19,6 +21,8 @@ export default function Instructions({
   onJumpHeightChange,
   showDebug,
   onDebugToggle,
+  nickname,
+  onNicknameChange,
 }: InstructionsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -69,6 +73,23 @@ export default function Instructions({
 
         {isExpanded && (
           <div className="mt-4 pt-4 border-t border-gray-600 space-y-4">
+            {/* ニックネーム */}
+            {nickname !== undefined && onNicknameChange && (
+              <div>
+                <label className="block text-sm font-medium mb-2 text-blue-200">
+                  ニックネーム
+                </label>
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => onNicknameChange(e.target.value)}
+                  maxLength={20}
+                  placeholder="名前を入力"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            )}
+
             {/* 歩行速度 */}
             <div>
               <label className="block text-sm font-medium mb-2 text-blue-200">

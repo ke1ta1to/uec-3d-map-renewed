@@ -33,7 +33,7 @@ export default function Scene() {
   const loadingSpinnerRef = useRef<LoadingSpinnerRef>(null);
 
   // マルチプレイヤー機能
-  const { players, isConnected, connect, updatePosition } = useMultiplayer();
+  const { players, isConnected, connect, updatePosition, updateNickname, nickname } = useMultiplayer();
   const hasConnectedRef = useRef(false);
 
   // 状態同期とクリーンアップ
@@ -250,6 +250,8 @@ export default function Scene() {
             onJumpHeightChange={setJumpHeight}
             showDebug={showDebug}
             onDebugToggle={setShowDebug}
+            nickname={nickname}
+            onNicknameChange={updateNickname}
           />
         )}
 

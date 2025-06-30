@@ -1,7 +1,8 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
+import { Text, Billboard } from '@react-three/drei'
 import { Group, Vector3 } from 'three'
 import type { Database } from '@/types/supabase'
 
@@ -22,7 +23,7 @@ export default function OtherPlayer({ player }: OtherPlayerProps) {
   }, [player.position_x, player.position_y, player.position_z, player.user_id])
 
   // スムーズな位置補間
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!groupRef.current) return
 
     // ターゲット位置への線形補間（スムーズな移動）
@@ -38,19 +39,28 @@ export default function OtherPlayer({ player }: OtherPlayerProps) {
       {/* プレイヤーの立方体 */}
       <mesh>
         <boxGeometry args={[1, 2, 1]} />
-        <meshStandardMaterial color={player.color} />
+        <meshStandardMaterial color={player.color || '#3B82F6'} />
       </mesh>
       
-      {/* ニックネーム表示（後で実装） */}
-      {/* <Text
-        position={[0, 2.5, 0]}
-        fontSize={0.5}
-        color="white"
-        anchorX="center"
-        anchorY="middle"
+      {/* ニックネーム表示（ビルボード効果でカメラ方向を向く） */}
+      <Billboard
+        follow={true}
+        lockX={false}
+        lockY={false}
+        lockZ={false}
+        position={[0, 1.5, 0]}
       >
-        {player.nickname}
-      </Text> */}
+        <Text
+          fontSize={0.3}
+          color="white"
+          anchorX="center"
+          anchorY="middle"
+          outlineWidth={0.05}
+          outlineColor="black"
+        >
+          {player.nickname || 'Player'}
+        </Text>
+      </Billboard>
     </group>
   )
 }
