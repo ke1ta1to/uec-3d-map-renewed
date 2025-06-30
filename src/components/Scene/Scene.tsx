@@ -8,6 +8,7 @@ import Player from "./Player";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import Instructions from "../UI/Instructions";
 import DebugInfo from "../UI/DebugInfo";
+import { NicknameModal } from "../UI/NicknameModal";
 import { useMultiplayer } from "@/hooks/useMultiplayer";
 import OtherPlayer from "../Multiplayer/OtherPlayer";
 
@@ -23,6 +24,7 @@ export default function Scene() {
   const [showDebug, setShowDebug] = useState(true);
   const [isModelLoaded, setIsModelLoaded] = useState(false);
   const [showLoadingSpinner, setShowLoadingSpinner] = useState(true);
+  const [showNicknameModal, setShowNicknameModal] = useState(true);
   const [debugData, setDebugData] = useState<{
     position: { x: number; y: number; z: number };
     rotation: { x: number; y: number; z: number };
@@ -204,8 +206,8 @@ export default function Scene() {
                   loadingSpinnerRef.current?.completeLoading();
                   // 即座にモデル読み込み完了状態に（ローディングフェードアウトと並行してメインUI表示）
                   setIsModelLoaded(true);
-                  // マルチプレイヤー接続（1回のみ）
-                  if (!hasConnectedRef.current) {
+                  // ニックネームモーダルが閉じられている場合のみマルチプレイヤー接続
+                  if (!showNicknameModal && !hasConnectedRef.current) {
                     hasConnectedRef.current = true;
                     connect();
                   }
@@ -255,8 +257,23 @@ export default function Scene() {
           />
         )}
 
+        {/* ニックネーム設定モーダル */}
+        <NicknameModal
+          isOpen={showNicknameModal}
+          initialNickname={nickname}
+          onConfirm={(newNickname) => {
+            updateNickname(newNickname);
+            setShowNicknameModal(false);
+            // ニックネーム設定後にマルチプレイヤー接続
+            if (!hasConnectedRef.current) {
+              hasConnectedRef.current = true;
+              connect();
+            }
+          }}
+        />
+
         {/* ポインターロック開始のオーバーレイ */}
-        {isModelLoaded && !isPointerLocked && (
+        {isModelLoaded && !isPointerLocked && !showNicknameModal && (
           <div
             className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-40 cursor-pointer"
             onClick={handleStartPointerLock}
