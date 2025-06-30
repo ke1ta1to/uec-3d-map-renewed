@@ -13,6 +13,7 @@ interface PlayerProps {
     position: { x: number; y: number; z: number };
     rotation: { x: number; y: number; z: number };
   }) => void;
+  onPositionUpdate?: (position: { x: number, y: number, z: number }, rotation: { y: number }) => void;
 }
 
 export default function Player({
@@ -20,6 +21,7 @@ export default function Player({
   jumpHeight = 9,
   onLockChange,
   onDebugUpdate,
+  onPositionUpdate,
 }: PlayerProps) {
   const { camera, scene } = useThree();
 
@@ -31,6 +33,7 @@ export default function Player({
   const velocity = useRef(new Vector3());
   const direction = useRef(new Vector3());
   const isOnGround = useRef(true);
+  const lastUpdateTimeRef = useRef<number>(0);
 
   // レイキャスター（地面判定用）
   const raycaster = useRef(new Raycaster());
@@ -182,6 +185,18 @@ export default function Player({
           z: Math.round(((rotation.z * 180) / Math.PI) * 100) / 100,
         },
       });
+    }
+
+    // マルチプレイヤー位置更新（常に更新、レート制限付き）
+    if (onPositionUpdate) {
+      const now = Date.now();
+      if (!lastUpdateTimeRef.current || now - lastUpdateTimeRef.current > 50) { // 50ms間隔（20FPS）
+        onPositionUpdate(
+          { x: camera.position.x, y: camera.position.y, z: camera.position.z },
+          { y: camera.rotation.y }
+        );
+        lastUpdateTimeRef.current = now;
+      }
     }
   });
 

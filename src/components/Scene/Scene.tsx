@@ -8,6 +8,8 @@ import Player from "./Player";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import Instructions from "../UI/Instructions";
 import DebugInfo from "../UI/DebugInfo";
+import { useMultiplayer } from "@/hooks/useMultiplayer";
+import OtherPlayer from "../Multiplayer/OtherPlayer";
 
 interface LoadingSpinnerRef {
   completeLoading: () => void;
@@ -29,6 +31,10 @@ export default function Scene() {
   const retryCountRef = useRef<number>(0);
   const lastRequestTimeRef = useRef<number>(0);
   const loadingSpinnerRef = useRef<LoadingSpinnerRef>(null);
+
+  // マルチプレイヤー機能
+  const { players, isConnected, connect, updatePosition } = useMultiplayer();
+  const hasConnectedRef = useRef(false);
 
   // 状態同期とクリーンアップ
   useEffect(() => {
@@ -198,6 +204,11 @@ export default function Scene() {
                   loadingSpinnerRef.current?.completeLoading();
                   // 即座にモデル読み込み完了状態に（ローディングフェードアウトと並行してメインUI表示）
                   setIsModelLoaded(true);
+                  // マルチプレイヤー接続（1回のみ）
+                  if (!hasConnectedRef.current) {
+                    hasConnectedRef.current = true;
+                    connect();
+                  }
                 }}
               />
 
@@ -207,14 +218,27 @@ export default function Scene() {
                 jumpHeight={jumpHeight}
                 onLockChange={setIsPointerLocked}
                 onDebugUpdate={setDebugData}
+                onPositionUpdate={updatePosition}
               />
+
+              {/* 他のプレイヤー */}
+              {players.map((player) => (
+                <OtherPlayer key={player.id} player={player} />
+              ))}
             </Suspense>
           </Canvas>
         </Suspense>
 
         {/* デバッグ情報 */}
         {isModelLoaded && showDebug && (
-          <DebugInfo isVisible={showDebug} debugData={debugData || undefined} />
+          <DebugInfo 
+            isVisible={showDebug} 
+            debugData={debugData || undefined}
+            multiplayerStatus={{
+              isConnected,
+              playerCount: players.length
+            }}
+          />
         )}
 
         {/* 操作説明とUI */}

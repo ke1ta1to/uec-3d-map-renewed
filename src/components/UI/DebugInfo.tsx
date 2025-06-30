@@ -9,9 +9,13 @@ interface DebugInfoProps {
     position: { x: number; y: number; z: number };
     rotation: { x: number; y: number; z: number };
   };
+  multiplayerStatus?: {
+    isConnected: boolean;
+    playerCount: number;
+  };
 }
 
-export default function DebugInfo({ isVisible, debugData }: DebugInfoProps) {
+export default function DebugInfo({ isVisible, debugData, multiplayerStatus }: DebugInfoProps) {
   const [fps, setFps] = useState(0);
 
   useEffect(() => {
@@ -86,6 +90,24 @@ export default function DebugInfo({ isVisible, debugData }: DebugInfoProps) {
                 </div>
               </div>
             </>
+          )}
+          
+          {multiplayerStatus && (
+            <div className="border-t border-gray-600 pt-3">
+              <div className="text-blue-200 mb-2">マルチプレイヤー</div>
+              <div className="space-y-1 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">接続状態:</span>
+                  <span className={multiplayerStatus.isConnected ? "text-green-400" : "text-red-400"}>
+                    {multiplayerStatus.isConnected ? "接続中" : "未接続"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-400">オンライン人数:</span>
+                  <span className="text-white">{multiplayerStatus.playerCount + 1}人</span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </Card>
